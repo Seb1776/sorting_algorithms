@@ -43,6 +43,23 @@ int lomuto_partition_func(int *array, int start_num, size_t size)
 	return (left);
 }
 /**
+ * my_quick_sort - function to do 'quick sort' Sorting Algorithm
+ * @array: Pointer to array
+ * @size: Size of the array
+ * Return: void
+ */
+void my_quick_sort(int *array, size_t start, size_t size)
+{
+	size_t start_num = start, pivot_num = 0;
+
+	if (start_num < size)
+	{
+		pivot_num = lomuto_partition_func(array, start_num, size);
+		my_quick_sort(array, start_num, pivot_num - 1);
+		my_quick_sort(array, pivot_num + 1, size);
+	}
+}
+/**
  * quick_sort - function to do 'quick sort' Sorting Algorithm
  * @array: Pointer to array
  * @size: Size of the array
@@ -50,13 +67,9 @@ int lomuto_partition_func(int *array, int start_num, size_t size)
  */
 void quick_sort(int *array, size_t size)
 {
-	size_t start_num = 0;
-	int pivot_num = 0;
-
-	if (start_num < size)
+	if (!array || size < 2)
 	{
-		pivot_num = lomuto_partition_func(array, start_num, size);
-		quick_sort(array, (pivot_num - 1));
-		quick_sort(array, size);
+		return;
 	}
+	my_quick_sort(array, 0, size);
 }
