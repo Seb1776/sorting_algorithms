@@ -1,24 +1,19 @@
 #include "sort.h"
 /**
- * swap - function to swap elements in an array
- * @array: Pointer to array
- * @size: Size of the array
- * @left: The index to change
- * @right: The index to be changed
+ * swap - function to swap elements
+ *
+ * @a: Pointer to array
+ * @b: Size of the array
+ *
  * Return: void
  */
-void swap(int *array, size_t size, int left, int right)
+void swap(int *a, int *b)
 {
-	int temp;
+	int tmp;
 
-	if (array[left] != array[right])
-	{
-		temp = array[left];
-		array[left] = array[right];
-		array[right] = temp;
-		/* this prints the change as the task demand */
-		print_array(array, size);
-	}
+	tmp = *a;
+	*a = *b;
+	*b = tmp;
 }
 /**
  * lomuto_partition_func - Lomuto partition scheme function
@@ -28,23 +23,32 @@ void swap(int *array, size_t size, int left, int right)
  * @end: Final index
  * Return: void
  */
-int lomuto_partition_func(int *array, size_t size, size_t start, size_t end)
+int lomuto_partition_func(int *array, int start, int end, size_t size)
 {
-	size_t left = start, right = end, i;
 	int pivot_value = array[end];
+	int i = start, j;
 
-	for (i = left; i <= right; i++)
+	for (j = start; j < end; j++)
 	{
-		if (array[i] <= pivot_value)
+		if (array[j] <= pivot_value)
 		{
-			/* first changes */
-			swap(array, size, left, right);
-			left++;
+			if (i != j)
+			{
+				swap(&array[i], &array[j]);
+				print_array(array, size);
+			}
+
+			i++;
 		}
 	}
-	/* last change */
-	swap(array, size, left, right);
-	return (left);
+
+	if (i != end)
+	{
+		swap(&array[i], &array[end]);
+		print_array(array, size);
+	}
+
+	return (i);
 }
 /**
  * my_quick_sort - personal function to do the task easy
@@ -54,18 +58,21 @@ int lomuto_partition_func(int *array, size_t size, size_t start, size_t end)
  * @end: Final index
  * Return: void
  */
-void my_quick_sort(int *array, size_t size, size_t start, size_t end)
+void my_quick_sort(int *array, int start, int end, size_t size)
 {
-	size_t pivot_num = 0;
+	int pivot_num = 0;
 
 	if (start < end)
 	{
 		/* because the Lomuto algorithm require a star and end index */
 		/* this function allows do the same algorithm without the */
 		/* restriction of inputs given by the prototipe's task*/
-		pivot_num = lomuto_partition_func(array, size, start, end);
+		/**pivot_num = lomuto_partition_func(array, size, start, end);
 		my_quick_sort(array, size, start, pivot_num - 1);
-		my_quick_sort(array, size, pivot_num + 1, end);
+		my_quick_sort(array, size, pivot_num + 1, end);*/
+		pivot_num = lomuto_partition_func(array, start, end, size);
+		my_quick_sort(array, start, pivot_num - 1, size);
+		my_quick_sort(array, pivot_num + 1, end, size);
 	}
 }
 /**
@@ -76,9 +83,8 @@ void my_quick_sort(int *array, size_t size, size_t start, size_t end)
  */
 void quick_sort(int *array, size_t size)
 {
-	if (!array || size < 2)
-	{
+	if (array == NULL || size < 2)
 		return;
-	}
-	my_quick_sort(array, size, 0, size - 1);
+
+	my_quick_sort(array, 0, size - 1, size);
 }
